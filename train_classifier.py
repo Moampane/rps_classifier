@@ -5,7 +5,7 @@ from sklearn.ensemble import RandomForestClassifier
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import accuracy_score
 
-train_file = "aditi_ian.csv"
+train_file = "optimal_train.csv"
 train_data = pd.read_csv(train_file)
 
 labels = np.asarray(train_data.pop("labels"))
@@ -27,7 +27,7 @@ train_feature = np.asarray(train_feature)
 
 # split training data for training accuracy
 x_train, x_test, y_train, y_test = train_test_split(
-    train_feature, labels, test_size=0.1, shuffle=True, stratify=labels
+    train_feature, labels, test_size=0.5, shuffle=True, stratify=labels
 )
 
 model = RandomForestClassifier()

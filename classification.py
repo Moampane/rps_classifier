@@ -6,7 +6,7 @@ from sklearn.metrics import accuracy_score
 model_dict = pickle.load(open("rfc_model.p", "rb"))
 model = model_dict["model"]
 
-test_file = "Mo1_features.csv"
+test_file = "optimal_test.csv"
 test_data = pd.read_csv(test_file)
 
 test_labels = np.asarray(test_data.pop("labels"))

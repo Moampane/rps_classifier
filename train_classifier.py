@@ -1,29 +1,30 @@
 import pickle
 import pandas as pd
 import numpy as np
+import scipy
 from sklearn.ensemble import RandomForestClassifier
+from sklearn.neighbors import KNeighborsClassifier
+from sklearn.neural_network import MLPClassifier
+from sklearn.tree import DecisionTreeClassifier
+from sklearn.linear_model import LogisticRegression
+from sklearn.multioutput import MultiOutputClassifier
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import accuracy_score
+from features import extract_feature, get_mf, get_pf, get_iemg, get_wl, get_rms, get_var
 
-train_file = "big_chunker.csv"
-train_data = pd.read_csv(train_file)
+# train_file = "data/exampleEMGdata180trial_train.mat"
+train_file = "data/aditi_ian.mat"
 
-labels = np.asarray(train_data.pop("labels"))
+temp_load = scipy.io.loadmat(train_file)
+# label_load = scipy.io.loadmat("data/NEW_GESTURES_LIST.mat")
+# labels = temp_load["labels"]
+labels = temp_load["label_names"]
+# labels = label_load[list(label_load.keys())[-1]]
+labels = np.asarray(
+    [num for sublist in labels for num in sublist]
+)  # flatten because numpy flatten doesnt want to work
 
-# get best features
-# make mf features
-mf_headers = [f"MF ch {num}" for num in [x + 1 for x in range(4)]]
-
-# make pf features
-pf_headers = [f"PF ch {num}" for num in [x + 1 for x in range(4)]]
-
-# make best train features
-train_feature = pd.concat(
-    [train_data[mf_headers], train_data[pf_headers]], axis=1, join="inner"
-)
-
-# make features arrays
-train_feature = np.asarray(train_feature)
+train_feature = extract_feature(train_file, [get_pf, get_mf])
 
 # split training data for training accuracy
 x_train, x_test, y_train, y_test = train_test_split(
@@ -31,6 +32,14 @@ x_train, x_test, y_train, y_test = train_test_split(
 )
 
 model = RandomForestClassifier()
+# model = KNeighborsClassifier(n_neighbors=14)
+# model = MLPClassifier(
+#     hidden_layer_sizes=(3000, 3000, 3000, 3),
+#     activation="relu",
+#     random_state=1,
+#     solver="adam",
+#     max_iter=200,
+# )
 
 # fit model
 model.fit(x_train, y_train)

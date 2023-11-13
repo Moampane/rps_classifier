@@ -4,7 +4,7 @@ import numpy as np
 from sklearn.metrics import accuracy_score
 
 
-def classify(model, test_data):
+def classify_labeled(model, test_data):
     """
     Classify a set of features as either rock, paper, or scissors.
 
@@ -62,7 +62,35 @@ def classify(model, test_data):
     # print(f"{test_acc*100}% of samples were classified correctly!")
 
 
-cur_model = "rfc_model.p"
-cur_data = "KD1_features.csv"
+def live_classify(model, features):
+    """
+    Classify a set of signal(s) as either rock, paper, or scissors.
 
-print(classify(model=cur_model, test_data=cur_data))
+    arg(s):
+        model(string): The file path to a model trained by train_classifier.py.
+        features(numpy array): Numpy array representing the extracted features of EMG data (shape is trials x features)
+
+    return(s):
+        A list of values representing whether a player threw rock, paper, or scissors
+        based on the EMG signal(s).
+
+    """
+
+    rps_labels = ["rock", "paper", "scissors"]
+
+    model_dict = pickle.load(open(model, "rb"))
+    model = model_dict["model"]
+
+    # make predictions
+    test_predict = model.predict(features)
+
+    # Print prediction and actual for labeled data
+    [print(f"We predicted {rps_labels[idx-1]}") for idx in test_predict]
+
+    return test_predict
+
+
+# cur_model = "rfc_model.p"
+# cur_data = "optimal_test.csv"
+
+# print(classify_labeled(model=cur_model, test_data=cur_data))

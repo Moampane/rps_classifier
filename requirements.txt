@@ -1,6 +1,7 @@
-scipy
-numpy
-matplotlib
-pandas
-tensorflow
-scikit-learn
+scipy==1.11.3
+numpy==1.26.2
+matplotlib==3.8.1
+pandas==2.1.3
+scikit-learn==1.3.2
+pylsl==1.16.2
+pynput==1.7.6

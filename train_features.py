@@ -1,9 +1,15 @@
+import scipy
 import numpy as np
+import pandas as pd
 
 
-# extract signals from data for live classification
-def extract_signals(data):
-    signal_volts = data
+# extract signals from data for to train classifier
+def extract_signals(file_name):
+    mat = scipy.io.loadmat(file_name)
+    try:
+        signal_volts = mat["dataChTimeTr"]
+    except:
+        signal_volts = mat[list(mat.keys())[-1]]
 
     # FS = 1000 # measuring frequency
     NUM_CH = 4  # number of channels
@@ -12,15 +18,12 @@ def extract_signals(data):
     all_ch_signals = []
 
     for ch in range(NUM_CH):
-        # trials = [
-        #     # idx for idx in range(signal_volts.shape[-1])
-        #     idx
-        #     for idx in range(1)
-        # ]  # makes list of indices for voltages of a signal
-        # ch_signals = [
-        #     [v[tr - 1] for v in signal_volts[ch]] for tr in trials
-        # ]  # makes list of signals
-        ch_signals = [voltage[ch] for voltage in signal_volts]
+        trials = [
+            idx for idx in range(signal_volts.shape[-1])
+        ]  # makes list of indices for voltages of a signal
+        ch_signals = [
+            [v[tr - 1] for v in signal_volts[ch]] for tr in trials
+        ]  # makes list of signals
         all_ch_signals.append(ch_signals)
 
     return all_ch_signals
@@ -66,12 +69,11 @@ def get_pf(data):
     return abs(freqs[np.where(fft == max(fft[1:]))[0]][0])
 
 
-# live classification feature extraction
-def extract_feature(data, func: list):
-    ex_signals = extract_signals(data)
+# training feature extraction
+def extract_feature(file_name, func: list):
+    signals = extract_signals(file_name)
 
-    # features = [[[f(trial) for trial in ch] for ch in signals] for f in func]
-    features = [[f(signal) for signal in ex_signals] for f in func]
+    features = [[[f(trial) for trial in ch] for ch in signals] for f in func]
 
     features = np.transpose(np.concatenate(features))
 

@@ -1,9 +1,5 @@
-import pickle
 from classification import live_classify
-from features import extract_feature, get_mf, get_pf, get_wl
-from sklearn.metrics import accuracy_score
-import scipy
-import numpy as np
+from features import extract_feature, get_mf, get_pf
 
 
 class RunPythonModel:

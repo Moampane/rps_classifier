@@ -3,20 +3,22 @@ import pandas as pd
 import numpy as np
 import scipy
 from sklearn.ensemble import RandomForestClassifier
-from sklearn.neighbors import KNeighborsClassifier
-from sklearn.neural_network import MLPClassifier
-from sklearn.tree import DecisionTreeClassifier
-from sklearn.linear_model import LogisticRegression
-from sklearn.multioutput import MultiOutputClassifier
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import accuracy_score
-from features import extract_feature, get_mf, get_pf, get_iemg, get_wl, get_rms, get_var
+from train_features import (
+    extract_feature,
+    get_mf,
+    get_pf,
+    get_iemg,
+    get_wl,
+    get_rms,
+    get_var,
+)
 
 # train_file = "data/exampleEMGdata180trial_train.mat"
 # train_file = "data/aditi_ian.mat"
 train_file = "data/Unfiltered_Mos5.mat"
 
-temp_load = scipy.io.loadmat(train_file)
 label_load = scipy.io.loadmat("data/Unfiltered_Mos5_Ges.mat")
 # labels = temp_load["labels"]
 # labels = temp_load["label_names"]
@@ -24,6 +26,15 @@ labels = label_load[list(label_load.keys())[-1]]
 labels = np.asarray(
     [num for sublist in labels for num in sublist]
 )  # flatten because numpy flatten doesnt want to work
+
+print(labels)
+
+two_idxs = [idx for idx in range(len(labels)) if labels[idx] == 2]
+three_idxs = [idx for idx in range(len(labels)) if labels[idx] == 3]
+labels[two_idxs] = 3
+labels[three_idxs] = 2
+
+print(labels)
 
 train_feature = extract_feature(train_file, [get_pf, get_mf])
 

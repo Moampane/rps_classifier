@@ -1,5 +1,8 @@
+"""
+Creates the rps classifier by training on data input as the file path in the variable train_file.
+"""
+
 import pickle
-import pandas as pd
 import numpy as np
 import scipy
 from sklearn.ensemble import RandomForestClassifier
@@ -9,32 +12,19 @@ from train_features import (
     extract_feature,
     get_mf,
     get_pf,
-    get_iemg,
-    get_wl,
-    get_rms,
-    get_var,
 )
 
-# train_file = "data/exampleEMGdata180trial_train.mat"
-# train_file = "data/aditi_ian.mat"
 train_file = "data/Unfiltered_Mos5.mat"
 
 label_load = scipy.io.loadmat("data/Unfiltered_Mos5_Ges.mat")
-# labels = temp_load["labels"]
-# labels = temp_load["label_names"]
 labels = label_load[list(label_load.keys())[-1]]
-labels = np.asarray(
-    [num for sublist in labels for num in sublist]
-)  # flatten because numpy flatten doesnt want to work
+labels = np.asarray([num for sublist in labels for num in sublist])
 
-print(labels)
-
+# post processing
 two_idxs = [idx for idx in range(len(labels)) if labels[idx] == 2]
 three_idxs = [idx for idx in range(len(labels)) if labels[idx] == 3]
 labels[two_idxs] = 3
 labels[three_idxs] = 2
-
-print(labels)
 
 train_feature = extract_feature(train_file, [get_pf, get_mf])
 
@@ -44,14 +34,6 @@ x_train, x_test, y_train, y_test = train_test_split(
 )
 
 model = RandomForestClassifier()
-# model = KNeighborsClassifier(n_neighbors=10)
-# model = MLPClassifier(
-#     hidden_layer_sizes=(81, 27, 9, 3),
-#     activation="relu",
-#     random_state=1,
-#     solver="adam",
-#     max_iter=200,
-# )
 
 # fit model
 model.fit(x_train, y_train)

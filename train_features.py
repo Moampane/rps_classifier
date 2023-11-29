@@ -1,6 +1,9 @@
+"""
+Helper functions for training feature extraction.
+"""
+
 import scipy
 import numpy as np
-import pandas as pd
 
 
 # extract signals from data for to train classifier
@@ -11,7 +14,6 @@ def extract_signals(file_name):
     except:
         signal_volts = mat[list(mat.keys())[-1]]
 
-    # FS = 1000 # measuring frequency
     NUM_CH = 4  # number of channels
 
     # dictionary of lists of signals

@@ -1,3 +1,7 @@
+"""
+Helper functions for classification.
+"""
+
 import pickle
 import numpy as np
 
